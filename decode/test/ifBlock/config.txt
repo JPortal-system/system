@@ -1,0 +1,4 @@
+[
+	./
+	/home/wef/Documents/jipt/jdk12-06222165c35f/build/linux-x86_64-server-release/jdk/modules/java.base/
+]

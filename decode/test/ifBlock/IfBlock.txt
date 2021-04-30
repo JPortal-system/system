@@ -1,0 +1,194 @@
+Classfile /home/wef/Documents/jipt/new-decode/test/ifBlock/IfBlock.class
+  Last modified May 3, 2020; size 903 bytes
+  MD5 checksum 57c4f7e0c68d01fdb9263ef8abb77805
+  Compiled from "IfBlock.java"
+public class IfBlock
+  minor version: 0
+  major version: 55
+  flags: (0x0021) ACC_PUBLIC, ACC_SUPER
+  this_class: #6                          // IfBlock
+  super_class: #13                        // java/lang/Object
+  interfaces: 0, fields: 1, methods: 4, attributes: 1
+Constant pool:
+   #1 = Methodref          #13.#30        // java/lang/Object."<init>":()V
+   #2 = Fieldref           #6.#31         // IfBlock.argvs:I
+   #3 = Fieldref           #32.#33        // java/lang/System.out:Ljava/io/PrintStream;
+   #4 = String             #34            // Hello World
+   #5 = Methodref          #35.#36        // java/io/PrintStream.println:(Ljava/lang/String;)V
+   #6 = Class              #37            // IfBlock
+   #7 = Methodref          #6.#38         // IfBlock."<init>":(I)V
+   #8 = Methodref          #6.#39         // IfBlock.is_positive:()Z
+   #9 = String             #20            // is_positive
+  #10 = Methodref          #6.#40         // IfBlock.is_negtive:()Z
+  #11 = String             #23            // is_negtive
+  #12 = String             #41            // is_zero
+  #13 = Class              #42            // java/lang/Object
+  #14 = Utf8               argvs
+  #15 = Utf8               I
+  #16 = Utf8               <init>
+  #17 = Utf8               (I)V
+  #18 = Utf8               Code
+  #19 = Utf8               LineNumberTable
+  #20 = Utf8               is_positive
+  #21 = Utf8               ()Z
+  #22 = Utf8               StackMapTable
+  #23 = Utf8               is_negtive
+  #24 = Utf8               main
+  #25 = Utf8               ([Ljava/lang/String;)V
+  #26 = Utf8               Exceptions
+  #27 = Class              #43            // java/lang/Exception
+  #28 = Utf8               SourceFile
+  #29 = Utf8               IfBlock.java
+  #30 = NameAndType        #16:#44        // "<init>":()V
+  #31 = NameAndType        #14:#15        // argvs:I
+  #32 = Class              #45            // java/lang/System
+  #33 = NameAndType        #46:#47        // out:Ljava/io/PrintStream;
+  #34 = Utf8               Hello World
+  #35 = Class              #48            // java/io/PrintStream
+  #36 = NameAndType        #49:#50        // println:(Ljava/lang/String;)V
+  #37 = Utf8               IfBlock
+  #38 = NameAndType        #16:#17        // "<init>":(I)V
+  #39 = NameAndType        #20:#21        // is_positive:()Z
+  #40 = NameAndType        #23:#21        // is_negtive:()Z
+  #41 = Utf8               is_zero
+  #42 = Utf8               java/lang/Object
+  #43 = Utf8               java/lang/Exception
+  #44 = Utf8               ()V
+  #45 = Utf8               java/lang/System
+  #46 = Utf8               out
+  #47 = Utf8               Ljava/io/PrintStream;
+  #48 = Utf8               java/io/PrintStream
+  #49 = Utf8               println
+  #50 = Utf8               (Ljava/lang/String;)V
+{
+  IfBlock(int);
+    descriptor: (I)V
+    flags: (0x0000)
+    Code:
+      stack=2, locals=2, args_size=2
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: aload_0
+         5: iconst_0
+         6: putfield      #2                  // Field argvs:I
+         9: aload_0
+        10: iload_1
+        11: putfield      #2                  // Field argvs:I
+        14: return
+      LineNumberTable:
+        line 4: 0
+        line 2: 4
+        line 5: 9
+        line 6: 14
+
+  public boolean is_positive();
+    descriptor: ()Z
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: getfield      #2                  // Field argvs:I
+         4: ifle          9
+         7: iconst_1
+         8: ireturn
+         9: iconst_0
+        10: ireturn
+      LineNumberTable:
+        line 9: 0
+        line 10: 7
+        line 12: 9
+      StackMapTable: number_of_entries = 1
+        frame_type = 9 /* same */
+
+  public boolean is_negtive();
+    descriptor: ()Z
+    flags: (0x0001) ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: getfield      #2                  // Field argvs:I
+         4: ifge          9
+         7: iconst_1
+         8: ireturn
+         9: iconst_0
+        10: ireturn
+      LineNumberTable:
+        line 16: 0
+        line 17: 7
+        line 19: 9
+      StackMapTable: number_of_entries = 1
+        frame_type = 9 /* same */
+
+  public static void main(java.lang.String[]) throws java.lang.Exception;
+    descriptor: ([Ljava/lang/String;)V
+    flags: (0x0009) ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=3, locals=3, args_size=1
+         0: getstatic     #3                  // Field java/lang/System.out:Ljava/io/PrintStream;
+         3: ldc           #4                  // String Hello World
+         5: invokevirtual #5                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+         8: new           #6                  // class IfBlock
+        11: dup
+        12: aload_0
+        13: arraylength
+        14: invokespecial #7                  // Method "<init>":(I)V
+        17: astore_1
+        18: aload_1
+        19: invokevirtual #8                  // Method is_positive:()Z
+        22: ifeq          36
+        25: getstatic     #3                  // Field java/lang/System.out:Ljava/io/PrintStream;
+        28: ldc           #9                  // String is_positive
+        30: invokevirtual #5                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+        33: goto          62
+        36: aload_1
+        37: invokevirtual #10                 // Method is_negtive:()Z
+        40: ifeq          54
+        43: getstatic     #3                  // Field java/lang/System.out:Ljava/io/PrintStream;
+        46: ldc           #11                 // String is_negtive
+        48: invokevirtual #5                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+        51: goto          62
+        54: getstatic     #3                  // Field java/lang/System.out:Ljava/io/PrintStream;
+        57: ldc           #12                 // String is_zero
+        59: invokevirtual #5                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+        62: getstatic     #3                  // Field java/lang/System.out:Ljava/io/PrintStream;
+        65: ldc           #4                  // String Hello World
+        67: invokevirtual #5                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+        70: iconst_0
+        71: istore_2
+        72: iload_2
+        73: bipush        10
+        75: if_icmpge     92
+        78: getstatic     #3                  // Field java/lang/System.out:Ljava/io/PrintStream;
+        81: ldc           #4                  // String Hello World
+        83: invokevirtual #5                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+        86: iinc          2, 1
+        89: goto          72
+        92: return
+      LineNumberTable:
+        line 23: 0
+        line 24: 8
+        line 26: 18
+        line 27: 25
+        line 28: 36
+        line 29: 43
+        line 31: 54
+        line 34: 62
+        line 36: 70
+        line 37: 78
+        line 36: 86
+        line 39: 92
+      StackMapTable: number_of_entries = 5
+        frame_type = 252 /* append */
+          offset_delta = 36
+          locals = [ class IfBlock ]
+        frame_type = 17 /* same */
+        frame_type = 7 /* same */
+        frame_type = 252 /* append */
+          offset_delta = 9
+          locals = [ int ]
+        frame_type = 250 /* chop */
+          offset_delta = 19
+    Exceptions:
+      throws java.lang.Exception
+}
+SourceFile: "IfBlock.java"

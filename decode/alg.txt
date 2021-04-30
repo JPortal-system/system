@@ -1,0 +1,35 @@
+Java Bytecodes: enum {
+    0~202
+}
+b_i: bytecode i
+Input: {b_n1, b_n2, .....} //dynamic bytecode sequence of whole project
+
+Java class
+CFG: {[B_m1], [B_m2], ...}
+[B_i]: Block i
+
+Match(Input)
+1. Divide Input to {dbs_k1, dbs_k2, ...} // dbs_i : { b_n1, b_n2, ... }
+2. Add entry dbs_n1 to work_list
+3. Add entry method(main) to method_list[n1]
+// Parallel
+4. While !work_list.empty()
+     4.1 dbs_ni = work_list.pop()
+     4.2 result[ni] = Match(dbs_ni, method_list[ni])
+     4.3 for each callee dbs_nj of dbs_ni
+         4.3.1 add dbs_nj to work_list
+         4.3.2 add class method to method_list[nj] by result[ni]
+         4.3.3 add class method's override to method_list[nj]
+
+Match(dbs_ni, method_list[ni])
+// Parallel
+1. for each method in method_list[ni]
+     1.1 if Match(dbs_ni, method, &result)
+         1.1.1return result
+
+Match(dbs_ni, method, &result)
+1. if !quality_check()
+     1.1 return
+2. while !dbs.empty()
+     2.1 bts = dbs.pop()
+     2.2 match(bts, block, result)
