@@ -11,7 +11,7 @@ class Analyser {
   friend class Matcher;
   private:
     Config _config;
-    unordered_map<string, Klass *> _Ks;
+    map<string, Klass *> _Ks;
     bool _is_parse_all = false;
     bool _is_analyse_all = false;
     bool _is_analyse_hierarchy = false;

@@ -1235,6 +1235,15 @@ bool nmethod::make_not_entrant_or_zombie(int state) {
     if (!is_osr_method() && !is_not_entrant()) {
       NativeJump::patch_verified_entry(entry_point(), verified_entry_point(),
                   SharedRuntime::get_handle_wrong_method_stub());
+
+// JPortalDump
+#if defined(linux)
+#if defined(__x86_64__)
+  JPortalDumper::jportal_inline_cache_add(verified_entry_point(),
+                  SharedRuntime::get_handle_wrong_method_stub(), 15ul);
+#endif
+#endif
+
     }
 
     if (is_in_use() && update_recompile_counts()) {

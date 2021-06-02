@@ -178,9 +178,7 @@ void CompiledDirectStaticCall::set_to_interpreted(const methodHandle& callee, ad
 // JPortalDump
 #if defined(linux)
 #if defined(__x86_64__)
-  // jump to stub then to entry
-  JPortalDumper::jportal_inline_cache_add(instruction_address(), stub);
-  JPortalDumper::jportal_inline_cache_add((address)jump, entry);
+  JPortalDumper::jportal_inline_cache_add(instruction_address(), entry);
 #endif
 #endif
 }
@@ -199,7 +197,6 @@ void CompiledDirectStaticCall::set_stub_to_clean(static_stub_Relocation* static_
 // JPortalDump
 #if defined(linux)
 #if defined(__x86_64__)
-  // jump to stub then to entry
   JPortalDumper::jportal_inline_cache_clear((address)jump);
 #endif
 #endif

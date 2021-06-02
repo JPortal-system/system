@@ -126,20 +126,13 @@ JvmDumpDecoder::DumpInfoType JvmDumpDecoder::dumper_event(uint64_t time, long ti
                 return _thread_start;
             }
             case _inline_cache_add: {
-                const InlineCacheAdd *ic;
-                ic = (const InlineCacheAdd*)current;
+                data = current;
                 current += sizeof(InlineCacheAdd);
-                inline_caches[ic->src] = ic->dest;
                 return _inline_cache_add;
             }
             case _inline_cache_clear: {
-                const InlineCacheClear *ic;
-                ic = (const InlineCacheClear*)current;
+                data = current;
                 current += sizeof(InlineCacheClear);
-                auto iter = inline_caches.find(ic->src);
-                if (iter != inline_caches.end()) {
-                    inline_caches.erase(iter);
-                }
                 return _inline_cache_clear;
             }
             default: {
@@ -156,15 +149,6 @@ long JvmDumpDecoder::get_java_tid(long tid) {
     if (iter == thread_map.end())
         return -1;
     return iter->second;
-}
-
-bool JvmDumpDecoder::get_inline_cache(uint64_t &addr, uint64_t &type) {
-    auto iter = inline_caches.find(addr);
-    if (iter != inline_caches.end()) {
-        addr = iter->second;
-        return true;
-    }
-    return false;
 }
 
 void JvmDumpDecoder::initialize(char *dump_data) {
@@ -266,10 +250,17 @@ void JvmDumpDecoder::initialize(char *dump_data) {
                 int errcode = jit_mk_section(&section, insts, cm->code_begin, cm->code_size,
                                                 scopes_pc, scopes_data, cmd, nullptr);
                 if (errcode < 0) {
+                    fprintf(stderr, "JvmDumpDecoder: fail to make section.\n");
                     delete cmd;
                     break;
                 }
-                jit_section_get(section);
+                errcode = jit_section_get(section);
+                if (errcode < 0) {
+                    fprintf(stderr, "JvmDumpDecoder: fail to get section.\n");
+                    delete cmd;
+                    jit_section_free(section);
+                    break;
+                }
                 section_map[buffer] = section;
                 cmd_map[buffer] = cmd;
                 break;
@@ -291,9 +282,16 @@ void JvmDumpDecoder::initialize(char *dump_data) {
                 jit_section *section;
                 int errcode = jit_mk_section(&section, code, dcg->code_begin, dcg->code_size,
                                                 nullptr, nullptr, nullptr, name);
-                if (errcode < 0)
+                if (errcode < 0) {
+                    fprintf(stderr, "JvmDumpDecoder: fail to make section.\n");
                     break;
-                jit_section_get(section);
+                }
+                errcode = jit_section_get(section);
+                if (errcode < 0) {
+                    fprintf(stderr, "JvmDumpDecoder: fail to get section.\n");
+                    jit_section_free(section);
+                    break;
+                }
                 section_map[buffer] = section;
                 break;
             }

@@ -45,16 +45,6 @@ struct jit_section {
 	CompiledMethodLoadInlineRecord *record;
 
 	const char *name;
-    /* A pointer to the image attached to this section.
-	 *
-	 * The pointer is initialized when the image attaches and cleared when
-	 * it detaches again.  There can be at most one image attached to this
-	 * section at any time.
-	 *
-	 * In addition to attaching, the image will need to obtain a reference
-	 * to the section, which it needs to drop again after detaching.
-	 */
-	struct jit_image *image;
 
 	/* A lock protecting this section.
 	 *
@@ -150,32 +140,6 @@ extern int jit_section_get(struct jit_section *section);
  * Returns -pte_bad_lock on any locking error.
  */
 extern int jit_section_put(struct jit_section *section);
-
-/* Attaches the image section cache user.
- *
- * Similar to pt_section_get() but sets @section->iscache to @iscache.
- *
- * Returns zero on success, a negative error code otherwise.
- * Returns -pte_internal if @section or @iscache is NULL.
- * Returns -pte_internal if a different cache is already attached.
- * Returns -pte_overflow if the attach count would overflow.
- * Returns -pte_bad_lock on any locking error.
- */
-extern int jit_section_attach(struct jit_section *section,
-			     struct jit_image *image);
-
-/* Detaches the image section cache user.
- *
- * Similar to pt_section_put() but clears @section->iscache.
- *
- * Returns zero on success, a negative error code otherwise.
- * Returns -pte_internal if @section or @iscache is NULL.
- * Returns -pte_internal if the attach count is already zero.
- * Returns -pte_internal if @section->iscache is not equal to @iscache.
- * Returns -pte_bad_lock on any locking error.
- */
-extern int jit_section_detach(struct jit_section *section,
-			     struct jit_image *image);
 
 extern const CompiledMethodDesc *jit_section_cmd(const struct jit_section *section);
 

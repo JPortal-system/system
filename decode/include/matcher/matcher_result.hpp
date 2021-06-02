@@ -26,6 +26,7 @@ class MatcherResult {
 
     unordered_map<size_t, unordered_map<const Method*, pair<pair<int, int>, size_t>>> &getSuccess() { return success; }
     unordered_map<size_t, pair<vector<const Method *>, pair<int, size_t>>> &getJit() { return jit; };
+    bool empty() { return success.empty() && jit.empty(); }
 };
 
 #endif // MATCHER_RESULT_HPP

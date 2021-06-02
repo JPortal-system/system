@@ -295,7 +295,6 @@ bool CompiledIC::set_to_megamorphic(CallInfo* call_info, Bytecodes::Code bytecod
 // JPortalDump
 #if defined(linux)
 #if defined(__x86_64__)
-  // jump to ic_stub then to entry (but ic_stub is a lea + jump)
   JPortalDumper::jportal_inline_cache_add(instruction_address(), entry);
 #endif
 #endif
@@ -401,7 +400,7 @@ bool CompiledIC::set_to_clean(bool in_use) {
 // JPortalDump
 #if defined(linux)
 #if defined(__x86_64__)
-  JPortalDumper::jportal_inline_cache_add(instruction_address(), entry);
+  JPortalDumper::jportal_inline_cache_clear(instruction_address());
 #endif
 #endif
   // We can't check this anymore. With lazy deopt we could have already
@@ -457,13 +456,6 @@ bool CompiledIC::set_to_monomorphic(CompiledICInfo& info) {
            (info.to_aot() ? "aot" : "interpreter"),
            method->print_value_string());
       }
-
-// JPortalDump
-#if defined(linux)
-#if defined(__x86_64__)
-  JPortalDumper::jportal_inline_cache_add(instruction_address(), info.entry());
-#endif
-#endif
 
     } else {
       // Call via method-klass-holder

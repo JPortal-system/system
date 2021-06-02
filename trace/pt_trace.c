@@ -412,6 +412,15 @@ int read_tsc_conversion(const struct perf_event_mmap_page *pc,
 	return 0;
 }
 
+static void tsc_ctc_ratio(__u32 *n, __u32 *d)
+{
+	unsigned int eax = 0, ebx = 0, ecx = 0, edx = 0;
+
+	__get_cpuid(0x15, &eax, &ebx, &ecx, &edx);
+	*n = ebx;
+	*d = eax;
+}
+
 static __u64 auxtrace_mmap_read_head(struct perf_event_mmap_page *header)
 {
 	__u64 head = header->aux_head;
@@ -965,7 +974,7 @@ int main(int argc, char *argv[])
     }
 	rec->pid = java_pid;
 	rec->mmap_pages = 1024;
-	rec->aux_pages = 1024*32;
+	rec->aux_pages = 1024*128;
 
 	/* write msr to set ip filter */
 	wrmsr_on_all_cpus(rec->nr_cpus, MSR_IA32_RTIT_ADDR0_A, _low_bound);
@@ -992,10 +1001,11 @@ int main(int argc, char *argv[])
 	read_tsc_conversion(rec->mmap_base[0], &attr.time_mult,
 			    			&attr.time_shift, &attr.time_zero);
 	pt_cpu_read(&attr.cpu);
-	attr.cpuid_0x15_ebx = 216;
-	attr.cpuid_0x15_eax = 2;
-	attr.nom_freq = 26;
-	attr.mtc_freq = 0x3;
+	tsc_ctc_ratio(&attr.cpuid_0x15_ebx, &attr.cpuid_0x15_eax);
+	int max_nonturbo_ratio;
+	pt_scan_file("max_nonturbo_ratio", "%d", &max_nonturbo_ratio);
+	attr.nom_freq = (__u8)max_nonturbo_ratio;
+	attr.mtc_freq = ((rec->attr.config >> 14) & 0xf);
 	attr.sample_type = 0x10087;
 	attr.nr_cpus = rec->nr_cpus;
 	attr.addr0_a = _low_bound;

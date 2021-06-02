@@ -194,7 +194,7 @@ void Analyser::analyse_call_graph() {
     
     for (auto ks : _Ks) {
         Klass *klass = ks.second;
-        unordered_map<string, Method*> *method_map = klass->get_method_map();
+        map<string, Method*> *method_map = klass->get_method_map();
         for (auto mm : *method_map) {
             Method *method = mm.second;
             BlockGraph *bg = method->get_bg();
@@ -218,7 +218,7 @@ void Analyser::analyse_call_graph() {
 
     for (auto ks : _Ks) {
         Klass *klass = ks.second;
-        unordered_map<string, Method*> *method_map = klass->get_method_map();
+        map<string, Method*> *method_map = klass->get_method_map();
         for (auto mm : *method_map) {
             Method *method = mm.second;
             BlockGraph *bg = method->get_bg();
@@ -283,9 +283,9 @@ void Analyser::analyse_callback(const char *callback) {
 
 void Analyser::output_method_map() {
     FILE *fp = fopen("methods", "w");
-    for (auto method : method_map) {
-        fprintf(fp, "%s %s : %d\n", method.first->get_klass()->get_name().c_str(),
-                    method.first->get_name().c_str(), method.second);
+    for (auto method : all_methods) {
+        fprintf(fp, "%s %s : %d\n", method->get_klass()->get_name().c_str(),
+                    method->get_name().c_str(), method_map[method]);
     }
     fclose(fp);
 }

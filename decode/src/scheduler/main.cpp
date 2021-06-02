@@ -42,7 +42,7 @@ private:
     ThreadSplit split;
     static mutex mu;
 public:
-    static map<long, list<pair<ThreadSplit, MethodMatcher*>>> threads;
+    static map<long, vector<pair<ThreadSplit, MethodMatcher*>>> threads;
 
     MatchTask(MethodMatcher *_matcher, long _tid, ThreadSplit _split):
                 Task(TaskKind::MATCHTASK),
@@ -55,23 +55,13 @@ protected:
             matcher->match();
 
         std::unique_lock<std::mutex> guard(MatchTask::mu);
-        auto iter = threads.find(tid);
-        if (iter == threads.end()) {
-            threads[tid].push_back(make_pair(split, matcher));
-        } else {
-            auto iter2 = iter->second.begin();
-            for (; iter2 != iter->second.end(); iter2++) {
-                if (iter2->first.start_time > split.start_time)
-                    break;
-            }
-            iter->second.insert(iter2, make_pair(split, matcher));
-        }
+        threads[tid].push_back(make_pair(split, matcher));
         return nullptr;
     };
 };
 
 mutex MatchTask::mu;
-map<long, list<pair<ThreadSplit, MethodMatcher*>>> MatchTask::threads;
+map<long, vector<pair<ThreadSplit, MethodMatcher*>>> MatchTask::threads;
 
 void decode_output(map<int, list<TracePart>> &traceparts, list<TraceData*> &traces,
                     Analyser *analyser) {
@@ -112,7 +102,8 @@ void decode_output(map<int, list<TracePart>> &traceparts, list<TraceData*> &trac
                                 fprintf(fp, "%hhu\n", *(codes+i));
                             }
                             access.set_current(new_loc);
-                        } else if (code == Bytecodes::_jportal_jitcode) {
+                        } else if (code == Bytecodes::_jportal_jitcode_entry ||
+                                        code == Bytecodes::_jportal_jitcode) {
                             const jit_section *section = nullptr;
                             const PCStackInfo **pcs = nullptr;
                             size_t size;
@@ -209,6 +200,15 @@ void decode(const char *trace_data, list<TraceData*> &traces,
     // decode_output(traceparts, traces, analyser);
 }
 
+bool cmp(pair<ThreadSplit, MethodMatcher *> x, 
+          pair<ThreadSplit, MethodMatcher *> y) {
+    if (x.first.start_time < y.first.start_time
+        || x.first.start_time == y.first.start_time && 
+            x.first.end_time < y.first.end_time)
+        return true;
+    return false;
+}
+
 void match(Analyser *analyser, list<TraceData*> &traces) {
     const int MaxThreadCount = 8;
     bool ThreadState[MaxThreadCount]{false};
@@ -219,7 +219,6 @@ void match(Analyser *analyser, list<TraceData*> &traces) {
             continue;
         unordered_map<long, list<ThreadSplit>> &thread_map = trace->get_thread_map();
         for (auto thread : thread_map) {
-
             for (auto split : thread.second) {
                 MethodMatcher *matcher = new MethodMatcher(*analyser, *trace,
                                 split.start_addr, split.end_addr);
@@ -245,6 +244,11 @@ void match(Analyser *analyser, list<TraceData*> &traces) {
         }
         if (worker_count==0)
             break;
+    }
+
+    auto iter = MatchTask::threads.begin();
+    for (; iter != MatchTask::threads.end(); iter++) {
+        sort(iter->second.begin(), iter->second.end(), cmp);
     }
 }
 
@@ -336,6 +340,8 @@ int main(int argc, char **argv) {
         sprintf(thread_name, "%ld", thread.first);
         FILE *fp = fopen(thread_name, "w");
         for (auto matcher : thread.second) {
+            if (!matcher.second || matcher.second->empty())
+                continue;
             fprintf(fp, "#%lld %lld %d %d\n", matcher.first.start_time,
                 matcher.first.end_time, matcher.first.head_loss, matcher.first.tail_loss);
             matcher.second->output(fp);

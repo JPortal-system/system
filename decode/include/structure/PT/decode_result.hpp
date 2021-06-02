@@ -108,7 +108,7 @@ class TraceDataRecord {
 
     int add_branch(u1 taken);
 
-    int add_jitcode(u8 time, const jit_section *section, PCStackInfo *pc);
+    int add_jitcode(u8 time, const jit_section *section, PCStackInfo *pc, bool entry);
 
     int add_codelet(CodeletsEntry::Codelet codelet);
 

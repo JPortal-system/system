@@ -1978,6 +1978,14 @@ IRT_LEAF(void, SharedRuntime::fixup_callers_callsite(Method* method, address cal
       address destination = call->destination();
       if (should_fixup_call_destination(destination, entry_point, caller_pc, moop, cb)) {
         call->set_destination_mt_safe(entry_point);
+
+// JPortalDump
+#if defined(linux)
+#if defined(__x86_64__)
+  JPortalDumper::jportal_inline_cache_add(call->instruction_address(), entry_point, 16ul);
+#endif
+#endif
+
       }
     }
   }

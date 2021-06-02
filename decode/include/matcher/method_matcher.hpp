@@ -6,6 +6,18 @@
 #include "structure/PT/decode_result.hpp"
 
 class MethodMatcher {
+  public:
+    struct MatchedMethod {
+      const Method *method;
+      bool jit;
+      int bci;
+      const jit_section *section = nullptr;
+      MatchedMethod(const Method *_method, bool _jit, int _bci) :
+        method(_method), jit(_jit), bci(_bci) {}
+      MatchedMethod(const Method *_method, bool _jit, int _bci,
+                      const jit_section *_section) :
+        method(_method), jit(_jit), bci(_bci), section(_section) {}
+    };
   private:
     MatcherResult result;
     TraceData &trace;
@@ -13,14 +25,13 @@ class MethodMatcher {
     size_t end_addr;
     Analyser &analyser;
     unordered_map<size_t, pair<BCTBlockList *, size_t>> bct_map;
-
-    int match_jit_dispatch(size_t &addr, const map<int, MethodDesc> &mds);
-    int match_jit(size_t &addr);
+    stack<stack<MatchedMethod>> mstack;
+    int match_jit(size_t &addr,size_t terminal, bool entry, int depth);
     int match_caller(size_t &addr, const Method* context, int depth);
-    int match_callee(size_t &addr, const Method* context, int offset, int depth, int noMatchedDepth);
+    int match_callee(size_t &addr, const Method* context, int offset, int depth);
     int match_dispatch(TraceDataAccess access, size_t &addr,
-                        const Method *method, vector<int> &callSites, int depth, int noMatchedDepth);
-    int match(size_t &addr, const Method* candidates, int offset, int depth,  int noMatchedDepth);
+                        const Method *method, vector<int> &callSites, int depth);
+    int match(size_t &addr, const Method* candidates, int offset, int depth);
     void match(size_t start, size_t end);
   public:
     MethodMatcher(Analyser &_analyser, TraceData &_trace,
@@ -36,6 +47,7 @@ class MethodMatcher {
     }
     void match();
     void output(FILE *fp);
+    bool empty() { return result.empty(); }
 };
 
 #endif // METHOD_MATCHER_HPP

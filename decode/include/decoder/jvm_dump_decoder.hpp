@@ -104,14 +104,12 @@ class JvmDumpDecoder {
 
     DumpInfoType dumper_event(uint64_t time, long tid, const void *&data);
     long get_java_tid(long tid);
-    bool get_inline_cache(uint64_t &addr, uint64_t &type);
 
     static void initialize(char *dump_data);
     static void destroy();
 
   private:
     const uint8_t *current;
-    map<uint64_t, uint64_t> inline_caches;
 
     static uint8_t *begin;
     static uint8_t *end;

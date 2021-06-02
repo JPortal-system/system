@@ -79,7 +79,8 @@ bool TraceData::get_jit(size_t loc, const PCStackInfo **&codes, size_t &size,
     if (pointer > data_end)
         return false;
     Bytecodes::Code code = Bytecodes::cast(*pointer);
-    if (code != Bytecodes::_jportal_jitcode)
+    if (code != Bytecodes::_jportal_jitcode_entry &&
+            code != Bytecodes::_jportal_jitcode)
         return false;
     pointer++;
     const JitRecord *jit = (const JitRecord *)pointer;
@@ -189,10 +190,13 @@ int TraceDataRecord::add_branch(u1 taken) {
 }
 
 int TraceDataRecord::add_jitcode(u8 time, const jit_section *section,
-                                 PCStackInfo *pc) {
+                                 PCStackInfo *pc, bool entry) {
     current_time = time;
-    if (code_type != Bytecodes::_jportal_jitcode || last_section != section) {
-        code_type = Bytecodes::_jportal_jitcode;
+    if (code_type != Bytecodes::_jportal_jitcode
+         && code_type != Bytecodes::_jportal_jitcode_entry
+         || last_section != section) {
+        code_type = entry ? Bytecodes::_jportal_jitcode_entry :
+                            Bytecodes::_jportal_jitcode;
         if (trace.write(&code_type, 1) < 0) {
             fprintf(stderr, "trace data record: fail to write.\n");
             return -1;
@@ -382,7 +386,8 @@ bool TraceDataAccess::next_trace(Bytecodes::Code &code, size_t &loc) {
             return false;
         }
         current = current + sizeof(InterRecord) + inter->size;
-    } else if (code == Bytecodes::_jportal_jitcode) {
+    } else if (code == Bytecodes::_jportal_jitcode_entry ||
+                    code == Bytecodes::_jportal_jitcode) {
         const JitRecord *jit = (const JitRecord *)current;
         if (current + sizeof(JitRecord) + jit->size * sizeof(PCStackInfo *) > trace.data_end ||
                 current + sizeof(JitRecord) + jit->size * sizeof(PCStackInfo *) < current) {

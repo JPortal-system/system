@@ -277,6 +277,7 @@ class Bytecodes {
 
         // jportal defined codes
         _jportal_bytecode,
+        _jportal_jitcode_entry,
         _jportal_jitcode,
         _jportal_method_entry,
         _jportal_invoke_return_entry_points,

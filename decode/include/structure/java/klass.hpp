@@ -12,7 +12,7 @@ class Klass {
     string _name;
     // <ConstantPool_index, class.name+signature>
     map<u2, string> _cp_index2method_ref;
-    unordered_map<string, Method *> _method_map;
+    map<string, Method *> _method_map;
     string _father_name;
     list<string> _interface_name_list;
     Klass *_father = nullptr;
@@ -39,7 +39,7 @@ class Klass {
     Klass *get_father() { return _father; }
     void add_child(Klass *child) { _children.push_back(child); }
     list<Klass *> get_children() { return _children; }
-    unordered_map<string, Method*> *get_method_map() { return &_method_map; }
+    map<string, Method*> *get_method_map() { return &_method_map; }
 };
 
 #endif // JAVA_KLASS_HPP

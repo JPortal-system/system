@@ -8,9 +8,7 @@
 
 ​	trace:                                       used to trace cpu instructions
 
-​    decode/td2dbc:                      used to decode hardware tracing data to dynamic bytecode sequences
-
-​    decode/dbc2sbc:                   used to project dynamic bytecode sequences to control flows
+​	decode:                      used to decode hardware tracing data
 
 ​	README:                                 this file
 

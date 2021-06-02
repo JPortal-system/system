@@ -132,6 +132,12 @@ void NativePltCall::set_stub_to_clean() {
   NativeGotJump* jump          = nativeGotJump_at(method_loader->next_instruction_address());
   method_loader->set_data(0);
   jump->set_jump_destination((address)-1);
+// JPortalDump
+#if defined(linux)
+#if defined(__x86_64__)
+  JPortalDumper::jportal_inline_cache_clear((address)jump);
+#endif
+#endif
 }
 
 void NativePltCall::verify() const {

@@ -225,14 +225,6 @@ bool InlineCacheBuffer::create_transition_stub(CompiledIC *ic, void* cached_valu
   // Update inline cache in nmethod to point to new "out-of-line" allocated inline cache
   ic->set_ic_destination(ic_stub);
 
-// JPortalDump
-#if defined(linux)
-#if defined(__x86_64__)
-  JPortalDumper::jportal_inline_cache_add(ic->instruction_address(), ic_stub->code_begin());
-  JPortalDumper::jportal_inline_cache_add(ic_stub->code_begin(), entry);
-#endif
-#endif
-
   return true;
 }
 

@@ -1225,7 +1225,7 @@ JRT_ENTRY(void, Runtime1::patch_code(JavaThread* thread, Runtime1::StubID stub_i
 #if defined(linux)
 #if defined(__x86_64__)
   JPortalDumper::jportal_inline_cache_add(instr_pc, 
-                      instr_pc + NativeGeneralJump::instruction_size);
+                      instr_pc + *byte_count);
 #endif
 #endif
 
@@ -1264,6 +1264,13 @@ JRT_ENTRY(void, Runtime1::patch_code(JavaThread* thread, Runtime1::StubID stub_i
         } else {
           ICache::invalidate_range(copy_buff, *byte_count);
           NativeGeneralJump::insert_unconditional(instr_pc, being_initialized_entry);
+// JPortalDump
+#if defined(linux)
+#if defined(__x86_64__)
+  JPortalDumper::jportal_inline_cache_add(instr_pc, 
+                      being_initialized_entry);
+#endif
+#endif
         }
       }
     }
