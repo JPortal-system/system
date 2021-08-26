@@ -36,7 +36,7 @@ $ make
 
 ### Build jdk
 
-​	Before building extended openjdk, run `bash configure`to check dependencies. After all dependencies installed, start to make jdk.
+​	Before building extended openjdk, to enable JPortal trace && dump, you should first compile trace && dump in trace/ respectively, then replace the path in JPortalTracer::jportal_enable && JPortalDumper::jportal_initialize of openjdk source codes with path to your built trace && dump executables. Run `bash configure`to check dependencies. After all dependencies installed, start to make jdk.
 
 ```bash
 $ cd jdk12-06222165c35f

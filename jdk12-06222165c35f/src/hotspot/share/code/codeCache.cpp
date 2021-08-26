@@ -1885,7 +1885,7 @@ void JPortalDumper::jportal_method_entry(JavaThread *thread, Method *moop) {
     return;
 
   int idx = method_array->find(moop);
-  if (method_array->find(moop) == -1) {
+  if (idx == -1) {
     if (pthread_mutex_lock(&dumper_lock) < 0) {
       jportal_exit();
       fprintf(stderr, "JPortal Dump: lock error.\n");

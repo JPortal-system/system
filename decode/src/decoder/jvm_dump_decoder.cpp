@@ -74,23 +74,7 @@ JvmDumpDecoder::DumpInfoType JvmDumpDecoder::dumper_event(uint64_t time, long ti
                 return _method_exit;
             }
             case _compiled_method_load: {
-                const CompiledMethodLoadInfo *cm;
-                cm = (const CompiledMethodLoadInfo*)current;
-                current += sizeof(CompiledMethodLoadInfo);
-                for (int i = 0; i < cm->inline_method_cnt; i++) {
-                    const InlineMethodInfo*imi;
-                    imi = (const InlineMethodInfo*)current;
-                    current += sizeof(InlineMethodInfo);
-                    const char *klass_name = (const char *)current;
-                    current += imi->klass_name_length;
-                    const char *name = (const char *)current;
-                    current += imi->name_length;
-                    const char *signature = (const char *)current;
-                    current += imi->signature_length;
-                }
-                current += cm->code_size;
-                current += cm->scopes_pc_size;
-                current += cm->scopes_data_size;
+                current += (info->size - sizeof(info));
                 auto iter = section_map.find(current);
                 if (iter == section_map.end())
                     return _no_thing;
@@ -103,15 +87,7 @@ JvmDumpDecoder::DumpInfoType JvmDumpDecoder::dumper_event(uint64_t time, long ti
                 return _compiled_method_unload;
             }
             case _dynamic_code_generated: {
-                const DynamicCodeGenerated *dcg;
-                dcg = (const DynamicCodeGenerated *)current;
-                current += sizeof(DynamicCodeGenerated);
-                const char *name;
-                const uint8_t *code;
-                name = (const char *)current;
-                current += dcg->name_length;
-                code = current;
-                current += dcg->code_size;
+                current += (info->size - sizeof(info));
                 auto iter = section_map.find(current);
                 if (iter == section_map.end())
                     return _no_thing;
