@@ -2555,7 +2555,7 @@ void JPortalDumper::jportal_initialize() {
       close(dump_pipe[0]);
       exit(-1);
     }
-    execl("/home/jake/codes/build/system-master/trace/dump_jvm_info.exe", 
+    execl("/home/jake/codes/system-master/build/trace/dump_jvm_info.exe", 
           "./dump_jvm_info.exe",
           shmid_arg, dump_fd, shmvolume_arg, NULL);
     fprintf(stderr, "JPortal Dump: dump jvm info execution error.\n");
@@ -2622,7 +2622,7 @@ void JPortalTracer::jportal_enable() {
         if (pid == 0) {
           prctl(PR_SET_PDEATHSIG, SIGTERM);
           close(trace_pipe[0]);
-          execl("/home/jake/codes/build/system-master/trace/pt_trace.exe",
+          execl("/home/jake/codes/system-master/build/trace/pt_trace.exe",
                   "./pt_trace.exe", java_pid, write_pipe, 
                   _low_bound, _high_bound, NULL);      
           close(trace_pipe[1]);

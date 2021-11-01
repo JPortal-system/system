@@ -41,7 +41,7 @@
 #include <cpuid.h>
 
 extern void pt_cpuid(uint32_t leaf, uint32_t *eax, uint32_t *ebx,
-		     uint32_t *ecx, uint32_t *edx)
+			 uint32_t *ecx, uint32_t *edx)
 {
 	__get_cpuid(leaf, eax, ebx, ecx, edx);
 }
@@ -87,7 +87,7 @@ static enum pt_cpu_vendor cpu_vendor(void)
 
 	for (i = 0; i < sizeof(cpu_vendors)/sizeof(*cpu_vendors); i++)
 		if (strncmp(vendor.vendor_string,
-			    cpu_vendors[i], pt_cpuid_vendor_size) == 0)
+				cpu_vendors[i], pt_cpuid_vendor_size) == 0)
 			return (enum pt_cpu_vendor) i;
 
 	return pcv_unknown;
@@ -176,18 +176,18 @@ struct trace_record
 };
 
 struct attr_config {
-    struct pt_cpu cpu; 
+	struct pt_cpu cpu; 
 	int nr_cpus;
-    __u8 mtc_freq;
-    __u8 nom_freq;
-    __u32 cpuid_0x15_eax;
-    __u32 cpuid_0x15_ebx;
-    __u64 sample_type;
-    __u16 time_shift;
-    __u32 time_mult;
-    __u64 time_zero;
-    __u64 addr0_a;
-    __u64 addr0_b;
+	__u8 mtc_freq;
+	__u8 nom_freq;
+	__u32 cpuid_0x15_eax;
+	__u32 cpuid_0x15_ebx;
+	__u64 sample_type;
+	__u16 time_shift;
+	__u32 time_mult;
+	__u64 time_zero;
+	__u64 addr0_a;
+	__u64 addr0_b;
 };
 
 struct auxtrace_event {
@@ -230,42 +230,42 @@ static inline int cpu_num()
 
 void wrmsr_on_cpu(uint32_t reg, int cpu, uint64_t data)
 {
-    int fd;
-    char msr_file_name[64];
+	int fd;
+	char msr_file_name[64];
 
-    sprintf(msr_file_name, "/dev/cpu/%d/msr", cpu);
-    fd = open(msr_file_name, O_WRONLY);
-    if (fd < 0) {
-        if (errno == ENXIO) {
-            fprintf(stderr, "wrmsr: No CPU %d\n", cpu);
-            exit(2);
-        } else if (errno == EIO) {
-            fprintf(stderr, "wrmsr: CPU %d doesn't support MSRs\n",
-                    cpu);
-            exit(3);
-        } else {
-            perror("wrmsr: open");
-            exit(127);
-        }
-    }
+	sprintf(msr_file_name, "/dev/cpu/%d/msr", cpu);
+	fd = open(msr_file_name, O_WRONLY);
+	if (fd < 0) {
+		if (errno == ENXIO) {
+			fprintf(stderr, "wrmsr: No CPU %d\n", cpu);
+			exit(2);
+		} else if (errno == EIO) {
+			fprintf(stderr, "wrmsr: CPU %d doesn't support MSRs\n",
+					cpu);
+			exit(3);
+		} else {
+			perror("wrmsr: open");
+			exit(127);
+		}
+	}
 
-    
-    if (pwrite(fd, &data, sizeof data, reg) != sizeof data) {
-        if (errno == EIO) {
-            fprintf(stderr,
-                    "wrmsr: CPU %d cannot set MSR "
-                    "0x%08"PRIx32" to 0x%016"PRIx64"\n",
-                    cpu, reg, data);
-            exit(4);
-        } else {
-            perror("wrmsr: pwrite");
-            exit(127);
-        }
-    }
 
-    close(fd);
+	if (pwrite(fd, &data, sizeof data, reg) != sizeof data) {
+		if (errno == EIO) {
+			fprintf(stderr,
+					"wrmsr: CPU %d cannot set MSR "
+					"0x%08"PRIx32" to 0x%016"PRIx64"\n",
+					cpu, reg, data);
+			exit(4);
+		} else {
+			perror("wrmsr: pwrite");
+			exit(127);
+		}
+	}
 
-    return;
+	close(fd);
+
+	return;
 }
 
 void wrmsr_on_all_cpus(int nr_cpus, uint32_t reg, uint64_t data){
@@ -519,8 +519,8 @@ static __u64 pt_default_config()
 	config |= 1;
 	/* tsc */
 	config |= (1 << 10);
-        /* disable ret compress */
-        config |= (1 << 11);
+	/* disable ret compress */
+	config |= (1 << 11);
 	if (pt_scan_file("caps/mtc", "%d",
 					 &mtc) != 1)
 		mtc = 1;
@@ -578,6 +578,7 @@ static int pt_default_attr(struct perf_event_attr *attr)
 	attr->sample_id_all = 1;
 	attr->read_format = 4;
 	attr->inherit = 1;
+	attr->context_switch = 1;
 
 	__u64 config = pt_default_config();
 	attr->config = config;
@@ -681,10 +682,10 @@ inline static ssize_t ion(bool is_read, int fd, void *buf, size_t n)
 	while (left)
 	{
 		/* buf must be treated as const if !is_read. */
-        ssize_t ret = is_read ? read(fd, buf, left) :
+		ssize_t ret = is_read ? read(fd, buf, left) :
 			write(fd, buf, left);
 
-        if (ret < 0 && errno == EINTR)
+		if (ret < 0 && errno == EINTR)
 		{
 			continue;
 		}
@@ -694,11 +695,11 @@ inline static ssize_t ion(bool is_read, int fd, void *buf, size_t n)
 			return ret;
 		}
 
-        left -= ret;
-        buf  += ret;
-    }
+		left -= ret;
+		buf  += ret;
+	}
 
-    return n;
+	return n;
 }
 
 inline static ssize_t record_write(int fd, const void *buf, size_t n)
@@ -941,7 +942,7 @@ static int record_all(struct trace_record *record)
 
 static void sig_handler(int sig)
 {
-    done = 1;
+	done = 1;
 }
 
 /* test */
@@ -971,10 +972,10 @@ int main(int argc, char *argv[])
 	{
 		fprintf(stderr, "fail to alloc record.\n");
 		return -1;
-    }
+	}
 	rec->pid = java_pid;
 	rec->mmap_pages = 1024;
-	rec->aux_pages = 1024*128;
+	rec->aux_pages = 1024*8;
 
 	/* write msr to set ip filter */
 	wrmsr_on_all_cpus(rec->nr_cpus, MSR_IA32_RTIT_ADDR0_A, _low_bound);
@@ -997,9 +998,9 @@ int main(int argc, char *argv[])
 		}
 	}
 
-    struct attr_config attr;
+	struct attr_config attr;
 	read_tsc_conversion(rec->mmap_base[0], &attr.time_mult,
-			    			&attr.time_shift, &attr.time_zero);
+							&attr.time_shift, &attr.time_zero);
 	pt_cpu_read(&attr.cpu);
 	tsc_ctc_ratio(&attr.cpuid_0x15_ebx, &attr.cpuid_0x15_eax);
 	int max_nonturbo_ratio;
@@ -1026,7 +1027,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "write pipe error\n");
 		goto err;
 	}
-    close(write_pipe);
+	close(write_pipe);
 
 	for (;;)
 	{

@@ -54,10 +54,10 @@ int create_inline_record(CompiledMethodLoadInlineRecord *record,
         sd = new ScopeDesc(p->scope_decode_offset(), p->obj_decode_offset(),
                            p->should_reexecute(), p->rethrow_exception(),
                            p->return_oop(), scopes_data);
-	    while (sd != NULL) {
+        while (sd != NULL) {
             record->pcinfo[scope].methods[stackframe] = sd->method_index();
             record->pcinfo[scope].bcis[stackframe] = sd->bci();
-			ScopeDesc *sd_p = sd->sender();
+            ScopeDesc *sd_p = sd->sender();
             delete sd;
             sd = sd_p;
             stackframe++;
@@ -166,7 +166,7 @@ void jit_section_free(struct jit_section *section) {
     mtx_destroy(&section->lock);
 
     if (section->record) {
-	    for (int i = 0; i < section->record->numpcs; i++) {
+        for (int i = 0; i < section->record->numpcs; i++) {
             free(section->record->pcinfo[i].bcis);
             free(section->record->pcinfo[i].methods);
         }
@@ -215,7 +215,7 @@ int jit_section_put(struct jit_section *section) {
 
     mcount = section->mcount;
     ucount = section->ucount;
-	if (ucount > 1) {
+    if (ucount > 1) {
         section->ucount = ucount - 1;
         return jit_section_unlock(section);
     }

@@ -100,7 +100,7 @@ extern int jit_image_find(struct jit_image *image, struct jit_section **section,
  * Returns -pte_nomap if validation failed.
  */
 extern int jit_image_validate(struct jit_image *image,
-			     struct jit_section *section,
-			     uint64_t vaddr);
+				 struct jit_section *section,
+				 uint64_t vaddr);
 
 #endif

@@ -17,10 +17,10 @@ using namespace std;
  * the methods array maps to same element in the bcis array.
  */
 typedef struct _PCStackInfo {
-  	uint64_t pc;             /* the pc address for this compiled method */
-  	jint numstackframes;  /* number of methods on the stack */
-  	jint* methods;   /* array of numstackframes method ids */
-  	jint* bcis;           /* array of numstackframes bytecode indices */
+	uint64_t pc;             /* the pc address for this compiled method */
+	jint numstackframes;  /* number of methods on the stack */
+	jint* methods;   /* array of numstackframes method ids */
+	jint* bcis;           /* array of numstackframes bytecode indices */
 } PCStackInfo;
 
 /*
@@ -28,8 +28,8 @@ typedef struct _PCStackInfo {
  * an nmethod.
  */
 typedef struct _CompiledMethodLoadInlineRecord {
-  	jint numpcs;          /* number of pc descriptors in this nmethod */
-  	PCStackInfo* pcinfo;  /* array of numpcs pc descriptors */
+	jint numpcs;          /* number of pc descriptors in this nmethod */
+	PCStackInfo* pcinfo;  /* array of numpcs pc descriptors */
 } CompiledMethodLoadInlineRecord;
 
 /* A section of contiguous memory loaded from a file. */
@@ -90,11 +90,11 @@ struct jit_section {
  * Returns -pte_invalid if @filename is too long.
  */
 extern int jit_mk_section(struct jit_section **psection,
-                        const uint8_t *code,
-                        uint64_t code_begin, uint64_t code_size, 
-                        const uint8_t *scopes_pc,
-                        const uint8_t *scopes_data,
-                        CompiledMethodDesc *cmd,
+						const uint8_t *code,
+						uint64_t code_begin, uint64_t code_size, 
+						const uint8_t *scopes_pc,
+						const uint8_t *scopes_data,
+						CompiledMethodDesc *cmd,
 						const char *name);
 
 /* Lock a section.
@@ -159,7 +159,7 @@ extern uint64_t jit_section_code_begin(const struct jit_section *section);
  * Returns -pte_nomap if @offset is beyond the end of the section.
  */
 extern int jit_section_read(struct jit_section *section, uint8_t *buffer,
-			   uint16_t size, uint64_t vaddr);
+						uint16_t size, uint64_t vaddr);
 
 /* read jitted code debug info */
 extern int jit_section_read_debug_info(struct jit_section *section,

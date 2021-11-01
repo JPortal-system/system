@@ -1982,7 +1982,7 @@ IRT_LEAF(void, SharedRuntime::fixup_callers_callsite(Method* method, address cal
 // JPortalDump
 #if defined(linux)
 #if defined(__x86_64__)
-  JPortalDumper::jportal_inline_cache_add(call->instruction_address(), entry_point, 16ul);
+  JPortalDumper::jportal_inline_cache_add(call->instruction_address(), entry_point);
 #endif
 #endif
 

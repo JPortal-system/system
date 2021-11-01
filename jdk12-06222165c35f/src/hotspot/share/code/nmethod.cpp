@@ -1240,7 +1240,7 @@ bool nmethod::make_not_entrant_or_zombie(int state) {
 #if defined(linux)
 #if defined(__x86_64__)
   JPortalDumper::jportal_inline_cache_add(verified_entry_point(),
-                  SharedRuntime::get_handle_wrong_method_stub(), 15ul);
+                  SharedRuntime::get_handle_wrong_method_stub());
 #endif
 #endif
 

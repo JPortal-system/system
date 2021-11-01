@@ -118,7 +118,7 @@ int preprocess_filename(char *filename, uint64_t *offset, uint64_t *size) {
 }
 
 int load_file(uint8_t **buffer, size_t *psize, const char *filename,
-		     uint64_t offset, uint64_t size, const char *prog) {
+             uint64_t offset, uint64_t size, const char *prog) {
     uint8_t *content;
     size_t read;
     FILE *file;
